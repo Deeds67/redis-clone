@@ -46,8 +46,11 @@ impl<R: BufRead> RespParser<R> {
                 }
             }
             Some('*') => {
-                let len: usize = line[1..].trim().parse()?;
-                let mut arr = Vec::with_capacity(len);
+                let len: isize = line[1..].trim().parse()?;
+                if len == -1 {
+                    return Ok(RespType::Null);
+                }
+                let mut arr = Vec::with_capacity(len as usize);
                 for _ in 0..len {
                     arr.push(self.parse()?);
                 }
@@ -146,6 +149,26 @@ mod resp_parser_tests {
         let mut parser = RespParser::new(Cursor::new(data));
         match parser.parse().unwrap() {
             RespType::BulkString(s) => assert_eq!(s, b""),
+            x => panic!("Unexpected RESP type: {:?}", x),
+        }
+    }
+
+    #[test]
+    fn test_parse_null_bulk_string() {
+        let data = "$-1\r\n";
+        let mut parser = RespParser::new(Cursor::new(data));
+        match parser.parse().unwrap() {
+            RespType::Null => assert!(true),
+            x => panic!("Unexpected RESP type: {:?}", x),
+        }
+    }
+    
+    #[test]
+    fn test_parse_null() {
+        let data = "*-1\r\n";
+        let mut parser = RespParser::new(Cursor::new(data));
+        match parser.parse().unwrap() {
+            RespType::Null => assert!(true),
             x => panic!("Unexpected RESP type: {:?}", x),
         }
     }
