@@ -14,6 +14,7 @@ fn handle_client(mut stream: TcpStream) {
     let mut serializer = RespSerializer::new(stream);
     let _ = serializer.serialize(&mock_response);
 }
+
 pub fn start_tcp_stream(port: &str) {
     let listener = TcpListener::bind(format!("127.0.0.1:{}", port)).expect("Could not bind");
     for stream in listener.incoming() {

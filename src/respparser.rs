@@ -61,8 +61,6 @@ impl<R: BufRead> RespParser<R> {
     }
 }
 
-
-
 #[cfg(test)]
 mod resp_parser_tests {
     use super::*;
@@ -162,7 +160,7 @@ mod resp_parser_tests {
             x => panic!("Unexpected RESP type: {:?}", x),
         }
     }
-    
+
     #[test]
     fn test_parse_null() {
         let data = "*-1\r\n";

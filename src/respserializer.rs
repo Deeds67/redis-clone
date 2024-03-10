@@ -1,6 +1,5 @@
 use crate::respparser::RespType;
 
-
 #[derive(Debug, PartialEq)]
 pub struct RespSerializer<W: std::io::Write> {
     writer: W,
@@ -15,32 +14,31 @@ impl<W: std::io::Write> RespSerializer<W> {
         match resp {
             RespType::SimpleString(s) => {
                 writeln!(self.writer, "+{}\r", s)
-            },
+            }
             RespType::Error(s) => {
                 writeln!(self.writer, "-{}\r", s)
-            },
+            }
             RespType::Integer(i) => {
                 writeln!(self.writer, ":{}\r", i)
-            },
+            }
             RespType::BulkString(bytes) => {
                 writeln!(self.writer, "${}\r", bytes.len())?;
                 self.writer.write_all(bytes)?;
                 writeln!(self.writer, "\r")
-            },
+            }
             RespType::Array(arr) => {
                 writeln!(self.writer, "*{}\r", arr.len())?;
                 for resp in arr {
                     self.serialize(resp)?;
                 }
                 Ok(())
-            },
+            }
             RespType::Null => {
                 writeln!(self.writer, "$-1\r")
-            },
+            }
         }
     }
 }
-
 
 #[cfg(test)]
 mod resp_serializer_tests {
