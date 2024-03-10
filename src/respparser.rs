@@ -1,5 +1,4 @@
-use std::io::{BufRead};
-use std::io::Cursor;
+use std::io::BufRead;
 
 #[derive(Debug)]
 #[derive(PartialEq)]
@@ -62,6 +61,7 @@ impl<R: BufRead> RespParser<R> {
 
 #[cfg(test)]
 mod tests {
+    use std::io::Cursor;
     use super::*;
 
     #[test]

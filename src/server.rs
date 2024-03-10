@@ -1,12 +1,13 @@
 use std::net::{TcpListener, TcpStream};
-use std::io::{BufReader, Read, Write};
+use std::io::{BufReader, Write};
 use crate::respparser::RespParser;
 
 fn handle_client(mut stream: TcpStream) {
+    println!("Incoming connection from: {}", stream.peer_addr().unwrap());
     let buf_reader = BufReader::new(&mut stream);
     let mut parser = RespParser::new(buf_reader);
-    let respResult = parser.parse().unwrap();
-    println!("{:?}", respResult);
+    let resp_result = parser.parse();
+    println!("RespResult: {:?}", resp_result);
 
     let response = "+OK\r\n";
 
