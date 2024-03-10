@@ -1,5 +1,5 @@
-mod server;
 mod respparser;
+mod server;
 
 fn main() {
     let port: &str = "6388";

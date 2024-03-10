@@ -1,7 +1,6 @@
 use std::io::BufRead;
 
-#[derive(Debug)]
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum RespType {
     SimpleString(String),
     Error(String),
@@ -44,7 +43,7 @@ impl<R: BufRead> RespParser<R> {
                     }
 
                     Ok(RespType::BulkString(buf))
-            }
+                }
             }
             Some('*') => {
                 let len: usize = line[1..].trim().parse()?;
@@ -61,8 +60,8 @@ impl<R: BufRead> RespParser<R> {
 
 #[cfg(test)]
 mod tests {
-    use std::io::Cursor;
     use super::*;
+    use std::io::Cursor;
 
     #[test]
     fn test_parse_simple_string() {
@@ -148,5 +147,4 @@ mod tests {
             x => panic!("Unexpected RESP type: {:?}", x),
         }
     }
-
 }

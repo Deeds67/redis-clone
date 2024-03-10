@@ -1,6 +1,6 @@
-use std::net::{TcpListener, TcpStream};
-use std::io::{BufReader, Write};
 use crate::respparser::RespParser;
+use std::io::{BufReader, Write};
+use std::net::{TcpListener, TcpStream};
 
 fn handle_client(mut stream: TcpStream) {
     println!("Incoming connection from: {}", stream.peer_addr().unwrap());
@@ -20,8 +20,8 @@ pub fn start_tcp_stream(port: &str) {
             Ok(stream) => {
                 handle_client(stream);
             }
-            Err(e) => { 
-                eprintln!("Failed: {}", e) 
+            Err(e) => {
+                eprintln!("Failed: {}", e)
             }
         }
     }
