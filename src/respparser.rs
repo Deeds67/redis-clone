@@ -58,8 +58,10 @@ impl<R: BufRead> RespParser<R> {
     }
 }
 
+
+
 #[cfg(test)]
-mod tests {
+mod resp_parser_tests {
     use super::*;
     use std::io::Cursor;
 
