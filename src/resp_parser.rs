@@ -10,6 +10,7 @@ pub enum RespType {
     Null,
 }
 
+
 pub struct RespParser<R: BufRead> {
     reader: R,
 }
