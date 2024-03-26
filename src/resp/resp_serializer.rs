@@ -1,4 +1,4 @@
-use crate::resp_parser::RespType;
+use super::RespType;
 
 #[derive(Debug, PartialEq)]
 pub struct RespSerializer<W: std::io::Write> {

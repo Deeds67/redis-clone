@@ -1,4 +1,4 @@
-use crate::resp_parser::RespType;
+use crate::resp::RespType;
 
 #[derive(Debug, PartialEq)]
 pub enum RedisAction {
@@ -49,7 +49,6 @@ impl From<RespType> for RedisAction {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resp_parser::RespType;
     #[test]
     fn test_from_resp_type_simple_string() {
         let resp = RespType::SimpleString(String::from("SET key value"));

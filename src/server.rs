@@ -1,13 +1,14 @@
-use crate::resp_parser::{RespParser, RespType};
-use crate::resp_serializer::RespSerializer;
 use std::io::BufReader;
 use std::net::{TcpListener, TcpStream};
+
+use crate::resp::{RespType, RespDeserializer, RespSerializer};
+
 
 fn handle_client(mut stream: TcpStream) {
     println!("Incoming connection from: {}", stream.peer_addr().unwrap());
     let buf_reader = BufReader::new(&mut stream);
-    let mut parser = RespParser::new(buf_reader);
-    let resp_result = parser.parse();
+    let mut parser = RespDeserializer::new(buf_reader);
+    let resp_result = parser.deserialize();
     println!("RespResult: {:?}", resp_result);
 
     let mock_response = RespType::SimpleString("OK".to_string());
