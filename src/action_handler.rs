@@ -9,7 +9,7 @@ impl RedisActionHandler {
         RedisActionHandler { db }
     }
     
-    pub fn handle(&mut self, resp: RespType) -> RespType {
+    pub fn handle(&self, resp: RespType) -> RespType {
         let action = RedisAction::from(resp);
         match action {
             RedisAction::Set(key, value) => {
@@ -113,14 +113,14 @@ mod tests {
 
     #[test]
     fn test_handle_set() {
-        let mut handler = RedisActionHandler::new(RedisDatabase::new());
+        let handler = RedisActionHandler::new(RedisDatabase::new());
         let resp = handler.handle(RespType::SimpleString("SET key value".to_string()));
         assert_eq!(resp, RespType::SimpleString("OK".to_string()));
     }
 
     #[test]
     fn test_handle_set_same_key_twice() {
-        let mut handler = RedisActionHandler::new(RedisDatabase::new());
+        let handler = RedisActionHandler::new(RedisDatabase::new());
         let resp = handler.handle(RespType::SimpleString("SET key value".to_string()));
         assert_eq!(resp, RespType::SimpleString("OK".to_string()));
         let resp = handler.handle(RespType::SimpleString("GET key".to_string()));
@@ -133,7 +133,7 @@ mod tests {
 
     #[test]
     fn test_handle_get() {
-        let mut handler = RedisActionHandler::new(RedisDatabase::new());
+        let handler = RedisActionHandler::new(RedisDatabase::new());
         handler.handle(RespType::SimpleString("SET key value".to_string()));
         let resp = handler.handle(RespType::SimpleString("GET key".to_string()));
         assert_eq!(resp, RespType::BulkString(b"value".to_vec()));
@@ -141,14 +141,14 @@ mod tests {
 
     #[test]
     fn test_handle_get_nonexistent() {
-        let mut handler = RedisActionHandler::new(RedisDatabase::new());
+        let handler = RedisActionHandler::new(RedisDatabase::new());
         let resp = handler.handle(RespType::SimpleString("GET key".to_string()));
         assert_eq!(resp, RespType::Null);
     }
 
     #[test]
     fn test_handle_del() {
-        let mut handler = RedisActionHandler::new(RedisDatabase::new());
+        let handler = RedisActionHandler::new(RedisDatabase::new());
         handler.handle(RespType::SimpleString("SET key value".to_string()));
         let resp = handler.handle(RespType::SimpleString("DEL key".to_string()));
         assert_eq!(resp, RespType::SimpleString("OK".to_string()));
@@ -156,14 +156,14 @@ mod tests {
 
     #[test]
     fn test_handle_ping() {
-        let mut handler = RedisActionHandler::new(RedisDatabase::new());
+        let handler = RedisActionHandler::new(RedisDatabase::new());
         let resp = handler.handle(RespType::SimpleString("PING".to_string()));
         assert_eq!(resp, RespType::SimpleString("PONG".to_string()));
     }
 
     #[test]
     fn test_handle_unknown() {
-        let mut handler = RedisActionHandler::new(RedisDatabase::new());
+        let handler = RedisActionHandler::new(RedisDatabase::new());
         let resp = handler.handle(RespType::SimpleString("UNKNOWN".to_string()));
         assert_eq!(resp, RespType::Error("Unknown command".to_string()));
     }

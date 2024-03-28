@@ -1,11 +1,13 @@
 use std::io::BufReader;
 use std::net::{TcpListener, TcpStream};
+use std::thread;
+use std::sync::Arc;
 
 use crate::action_handler::{self};
 use crate::resp::{RespType, RespDeserializer, RespSerializer};
 
 
-fn handle_client(mut stream: TcpStream, action_handler: &mut action_handler::RedisActionHandler) {
+fn handle_client(mut stream: TcpStream, action_handler: Arc<action_handler::RedisActionHandler>) {
     println!("Incoming connection from: {}", stream.peer_addr().unwrap());
     let buf_reader = BufReader::new(&mut stream);
     let mut parser = RespDeserializer::new(buf_reader);
@@ -23,12 +25,15 @@ fn handle_client(mut stream: TcpStream, action_handler: &mut action_handler::Red
     }
 }
 
-pub fn start_tcp_stream(port: &str, action_handler: &mut action_handler::RedisActionHandler) {
+pub fn start_tcp_stream(port: &str, action_handler: Arc<action_handler::RedisActionHandler>) {
     let listener = TcpListener::bind(format!("127.0.0.1:{}", port)).expect("Could not bind");
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
-                handle_client(stream, action_handler);
+                let handler = Arc::clone(&action_handler);
+                thread::spawn(move || {
+                    handle_client(stream, handler);
+                });
             }
             Err(e) => {
                 eprintln!("Failed: {}", e)
